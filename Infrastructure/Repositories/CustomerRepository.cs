@@ -86,7 +86,7 @@ public class CustomerRepository : ICustomerRepository
         return dtos.ToList();
     }
 
-    public async Task<List<CustomerDTO>> Update(int id, string name)
+    public async Task<List<CustomerDTO>> Update(int id, string name, string name2)
     {
         // Buscar el cliente por su ID
         var entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
@@ -99,7 +99,7 @@ public class CustomerRepository : ICustomerRepository
 
         // Actualizar el nombre del cliente
         entity.FirstName = name;  // FirstName, si no, puedes actualizar otras propiedades
-        entity.LastName = name;//modifica lastname
+        entity.LastName = name2;//modifica lastname
 
         // Guardar los cambios en la base de datos
         await _context.SaveChangesAsync();

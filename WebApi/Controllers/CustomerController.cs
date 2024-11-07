@@ -45,7 +45,7 @@ public class CustomerController : BaseApiController
         try
         {
             // Llama al repositorio para actualizar el cliente y obtener la lista actualizada
-            var updatedCustomerList = await _customerRepository.Update(customer.Id, customer.FirstName);
+            var updatedCustomerList = await _customerRepository.Update(customer.Id, customer.FirstName,customer.LastName);
 
             // Retorna la lista actualizada de clientes en un formato adecuado (200 OK con la lista)
             return Ok(updatedCustomerList);
