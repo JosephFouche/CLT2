@@ -1,13 +1,14 @@
 ﻿using Core.DTOs;
+using Core.Request;
 
 namespace Core.Interfaces.Repositories;
 
 public interface ICustomerRepository
 {
-    Task<List<CustomerDTO>> List();
-    CustomerDTO Get(int id);
-    Task<List<CustomerDTO>> Add(string firstName, string? lastName);
-    Task<List<CustomerDTO>> Update(int id, string name, string name2);
+    Task<List<CustomerDTO>> List(PaginationRequest request); 
+    Task<CustomerDTO> Get(int id);
+    Task<CustomerDTO> Add(CreateCustomerDTO createCustomerDTO);
+    Task<CustomerDTO> Update(UpdateCustomerDTO updateCustomerDTO);
    Task<List<CustomerDTO>> Delete(int id);
 
 }

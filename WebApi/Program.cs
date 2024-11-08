@@ -1,8 +1,13 @@
+using Core.DTOs;
+using FluentValidation;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Registrar FluentValidation
+// Registrar validadores
+builder.Services.AddValidations();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

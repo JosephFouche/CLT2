@@ -1,54 +1,74 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repositories;
+using Core.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
-
+using Core.DTOs;
+using WebApi.Validations;
+using FluentValidation;
 namespace WebApi.Controllers;
 
 public class CustomerController : BaseApiController
 {
     private readonly ICustomerRepository _customerRepository;
+    //validacion
+    private readonly IValidator<CreateCustomerDTO> _validateCreate;
+    private readonly IValidator<UpdateCustomerDTO> _updateCustomer;
 
-    public CustomerController(ICustomerRepository customerRepository)
+    public CustomerController(ICustomerRepository customerRepository, IValidator<CreateCustomerDTO> validateCreate, IValidator<UpdateCustomerDTO> updateCustomer)
     {
         _customerRepository = customerRepository;
+        _validateCreate = validateCreate;
+        _updateCustomer = updateCustomer;
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> List()
+    public async Task<IActionResult> List([FromQuery] PaginationRequest request)//From query =  de la consulta en este caso page = 1 size 10
     {
-        return Ok(await _customerRepository.List());
+        return Ok(await _customerRepository.List(request));
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get([FromRoute] int id)
+    public async Task<IActionResult> Get([FromRoute] int id)
     {
-        return Ok(_customerRepository.Get(id));
+        return Ok(await _customerRepository.Get(id));
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add([FromBody] Customer customer)
+    public async Task<IActionResult> Add([FromBody] CreateCustomerDTO createCustomerDTO)
     {
-        return Ok(await _customerRepository.Add(customer.FirstName, customer.LastName));
+        // Validación con FluentValidation
+        var validationResult = await _validateCreate.ValidateAsync(createCustomerDTO);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+
+        var customerDTO = await _customerRepository.Add(createCustomerDTO);
+        return Ok(customerDTO);
+        //return Ok(await _customerRepository.Add(createCustomerDTO));
     }
 
-    
+
     [HttpPut("update")]
-    public async Task<IActionResult> Update([FromBody] Customer customer)
+    public async Task<IActionResult> Update([FromBody] UpdateCustomerDTO updateCustomerDTO)
+
     {
-        if (customer == null || customer.Id <= 0)
+        var results = await _updateCustomer.ValidateAsync(updateCustomerDTO);
+        if (!results.IsValid)
         {
-            return BadRequest("Cliente no válido.");
+            return BadRequest(results.Errors);
         }
 
         try
         {
             // Llama al repositorio para actualizar el cliente y obtener la lista actualizada
-            var updatedCustomerList = await _customerRepository.Update(customer.Id, customer.FirstName,customer.LastName);
+            var updatedCustomer = await _customerRepository.Update(updateCustomerDTO);
 
             // Retorna la lista actualizada de clientes en un formato adecuado (200 OK con la lista)
-            return Ok(updatedCustomerList);
+            return Ok(updatedCustomer);
         }
         catch (KeyNotFoundException ex)
         {

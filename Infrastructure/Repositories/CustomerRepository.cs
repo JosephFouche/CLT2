@@ -3,8 +3,10 @@ using Core.Entities;
 using Core.Interfaces.Repositories;
 using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Core.Request;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Linq;
 
 namespace Infrastructure.Repositories;
 
@@ -17,18 +19,23 @@ public class CustomerRepository : ICustomerRepository
         _context = context;
     }
 
-    public async Task<List<CustomerDTO>> Add(string firstName, string? lastName)
+    public async Task<CustomerDTO> Add(CreateCustomerDTO createCustomerDTO)
     {
         var entity = new Customer
         {
-            FirstName = firstName,
-            LastName = lastName
+            FirstName = createCustomerDTO.FirstName,
+            LastName = createCustomerDTO?.LastName,
+            Email = createCustomerDTO.Email,
+            Phone = createCustomerDTO?.Phone,
+            BirthDate = createCustomerDTO?.BirthDate,
+
+
         };
 
         _context.Customers.Add(entity); //aqui no impactamos aun la BD
         await _context.SaveChangesAsync(); //esto impacta en la BD
 
-        return await List();
+        return AddTo(entity);
     }
 
     public async Task<List<CustomerDTO>> Delete(int id)
@@ -53,10 +60,10 @@ public class CustomerRepository : ICustomerRepository
     }
 
 
-    public CustomerDTO Get(int Id)
+    public async Task<CustomerDTO> Get(int Id)
     {
         //buscar el cliente por su Id
-        var Entity = _context.Customers.FirstOrDefault(x => x.Id == Id);
+        var Entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == Id);
 
         //si entidad es null
         if (Entity == null)
@@ -86,26 +93,69 @@ public class CustomerRepository : ICustomerRepository
         return dtos.ToList();
     }
 
-    public async Task<List<CustomerDTO>> Update(int id, string name, string name2)
+    //un método público asíncrono que devuelve una tarea (Task) de tipo List<CustomerDTO>.
+    public async Task<List<CustomerDTO>> List(PaginationRequest request)
     {
+        //await junto con el método ToListAsync(), que es asíncrono y se
+        //ejecuta sobre el contexto de la base de datos (_context.Customers).
+        var customer = await _context.Customers.ToListAsync();
+        var dtos = customer
+            .Skip((request.Page - 1) * request.Size)//calcula cuántos elementos se deben omitir según la página actual.
+            .Take(request.Size)// limita el número de registros que se devuelven en esta consulta
+            .Select(customer => new CustomerDTO//Transforma cada objeto Customer en un objeto CustomerDTO
+                                               //(que es un tipo de datos más simplificado para ser enviado a la vista o la API
+            {
+                Id = customer.Id,
+                FullName = $"{customer.FirstName} {customer.LastName}",
+                Phone = customer.Phone,
+                Email = customer.Email,
+                BirthDate = customer.BirthDate
+            });
+        return dtos.OrderBy(c => c.Id).ToList();//se ordena por Id en orden ascendente
+        //Convierte el resultado de la consulta ordenada en una lista de tipo List<CustomerDTO>
+    }
+
+    public CustomerDTO AddTo(Customer customer) => new()
+    //método público que recibe un objeto de tipo Customer como parámetro y devuelve un nuevo objeto de tipo CustomerDTO
+    {
+
+        Id = customer.Id,
+        FullName = $"{customer.FirstName}{customer.LastName}",
+        Email = customer.Email,
+        Phone = customer.Phone,
+        BirthDate = customer.BirthDate
+    };
+
+
+    public async Task<CustomerDTO> Update(UpdateCustomerDTO updateCustomerDTO)
+    { 
         // Buscar el cliente por su ID
-        var entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
+        var entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == updateCustomerDTO.Id);
 
         if (entity == null)
         {
             // Si no se encuentra el cliente, lanzar una excepción
-            throw new KeyNotFoundException($"Customer con ID {id} no encontrada.");
+            throw new KeyNotFoundException($"Customer con ID {updateCustomerDTO} no encontrada.");
         }
 
         // Actualizar el nombre del cliente
-        entity.FirstName = name;  // FirstName, si no, puedes actualizar otras propiedades
-        entity.LastName = name2;//modifica lastname
+        entity.FirstName = updateCustomerDTO.FirstName;  // FirstName, si no, puedes actualizar otras propiedades
+        entity.LastName = updateCustomerDTO.LastName;//modifica lastname
+        entity.Email = updateCustomerDTO.Email;  // FirstName, si no, puedes actualizar otras propiedades
+        entity.Phone = updateCustomerDTO.Phone;
+        entity.BirthDate = updateCustomerDTO.BirthDate;  // FirstName, si no, puedes actualizar otras propiedades
+        
 
         // Guardar los cambios en la base de datos
         await _context.SaveChangesAsync();
 
         // Retornar la lista actualizada de clientes
-        return await List();  // método List() para obtener la lista actualizada de clientes como CustomerDTO
+        return AddTo(entity);  // método List() para obtener la lista actualizada de clientes como CustomerDTO
     }
 
+    public Task<List<CustomerDTO>> List(PaginationRequest request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
+//agregar y actualizar validar, endpoints
