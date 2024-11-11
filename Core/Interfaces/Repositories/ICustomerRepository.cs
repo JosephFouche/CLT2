@@ -9,6 +9,6 @@ public interface ICustomerRepository
     Task<CustomerDTO> Get(int id);
     Task<CustomerDTO> Add(CreateCustomerDTO createCustomerDTO);
     Task<CustomerDTO> Update(UpdateCustomerDTO updateCustomerDTO);
-   Task<List<CustomerDTO>> Delete(int id);
-
+   Task<CustomerDTO> Delete(int id);
+   
 }

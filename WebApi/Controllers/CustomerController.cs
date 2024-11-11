@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using Core.DTOs;
 using WebApi.Validations;
 using FluentValidation;
+using Infrastructure.Repositories;
 namespace WebApi.Controllers;
 
 public class CustomerController : BaseApiController
@@ -84,4 +85,22 @@ public class CustomerController : BaseApiController
     {
         return Ok(await _customerRepository.Delete(id));
     }
+
+    // GET: api//{id}
+   //* [HttpGet("Account{id}")]
+    //public async Task<IActionResult> GetAccount([FromRoute] int id)
+    //{
+    //    // Llamar al método del repositorio para obtener la cuenta detallada
+    //    var account = await _customerRepository.GetAll(id);
+
+    //    // Si no se encuentra la cuenta, devolver un NotFound
+    //    if (account == null)
+    //    {
+    //        return NotFound();
+    //    }
+
+    //    // Devolver la cuenta encontrada
+    //    return Ok(account);
+    //}
+    ////
 }

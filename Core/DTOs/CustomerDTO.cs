@@ -7,4 +7,5 @@ public class CustomerDTO
     public string? Email { get; set; }
     public string? Phone { get; set; }
     public DateTime? BirthDate { get; set; }
+    public List<CustomerDTO>? customer { get; set; }
 }

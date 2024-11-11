@@ -1,6 +1,9 @@
 using Core.DTOs;
+using Core.Interfaces.Repositories;
 using FluentValidation;
 using Infrastructure;
+using Infrastructure.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +16,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddRepositories();
-builder.Services.AddDatabase(builder.Configuration);
+// Registra el repositorio IAccountRepository para que se pueda inyectar en los controladores
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddInfrastructure(builder.Configuration);
+//builder.Services.AddRepositories();
+//builder.Services.AddDatabase(builder.Configuration);
 
 var app = builder.Build();
 

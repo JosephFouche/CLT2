@@ -7,6 +7,7 @@ using Core.Request;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq;
+using Mapster;
 
 namespace Infrastructure.Repositories;
 
@@ -35,10 +36,10 @@ public class CustomerRepository : ICustomerRepository
         _context.Customers.Add(entity); //aqui no impactamos aun la BD
         await _context.SaveChangesAsync(); //esto impacta en la BD
 
-        return AddTo(entity);
+        return entity.Adapt<CustomerDTO>();
     }
 
-    public async Task<List<CustomerDTO>> Delete(int id)
+    public async Task<CustomerDTO> Delete(int id)
     {
         // Buscar el cliente por su ID
         var entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
@@ -56,7 +57,7 @@ public class CustomerRepository : ICustomerRepository
         await _context.SaveChangesAsync();
 
         // Retornar la lista actualizada de clientes
-        return await List();  // Usamos await para esperar el resultado asincrónico
+        return entity.Adapt<CustomerDTO>();  // Usamos await para esperar el resultado asincrónico
     }
 
 
@@ -70,27 +71,21 @@ public class CustomerRepository : ICustomerRepository
         {
             //si no se encuentra cliente que envie comentario
             throw new KeyNotFoundException("No se encontro");
+            
         }
+        return Entity.Adapt<CustomerDTO>();
 
-        var entos = new CustomerDTO
-        {
-            Id = Entity.Id,
-            FullName = $"{Entity.FirstName}{Entity.LastName}"
-        };
-        return entos;
+       
+        
     }
 
     public async Task<List<CustomerDTO>> List()
     {
         var entities = await _context.Customers.ToListAsync();
 
-        var dtos = entities.Select(customer => new CustomerDTO
-        {
-            Id = customer.Id,
-            FullName = $"{customer.FirstName} {customer.LastName}"
-        });
+        return entities.Adapt<List<CustomerDTO>>();
 
-        return dtos.ToList();
+        
     }
 
     //un método público asíncrono que devuelve una tarea (Task) de tipo List<CustomerDTO>.
@@ -98,8 +93,7 @@ public class CustomerRepository : ICustomerRepository
     {
         //await junto con el método ToListAsync(), que es asíncrono y se
         //ejecuta sobre el contexto de la base de datos (_context.Customers).
-        var customer = await _context.Customers.ToListAsync();
-        var dtos = customer
+        var customer = await _context.Customers
             .Skip((request.Page - 1) * request.Size)//calcula cuántos elementos se deben omitir según la página actual.
             .Take(request.Size)// limita el número de registros que se devuelven en esta consulta
             .Select(customer => new CustomerDTO//Transforma cada objeto Customer en un objeto CustomerDTO
@@ -110,8 +104,8 @@ public class CustomerRepository : ICustomerRepository
                 Phone = customer.Phone,
                 Email = customer.Email,
                 BirthDate = customer.BirthDate
-            });
-        return dtos.OrderBy(c => c.Id).ToList();//se ordena por Id en orden ascendente
+            }).ToListAsync();//coregido
+        return customer.OrderBy(c => c.Id).ToList();//se ordena por Id en orden ascendente
         //Convierte el resultado de la consulta ordenada en una lista de tipo List<CustomerDTO>
     }
 
@@ -128,7 +122,7 @@ public class CustomerRepository : ICustomerRepository
 
 
     public async Task<CustomerDTO> Update(UpdateCustomerDTO updateCustomerDTO)
-    { 
+    {
         // Buscar el cliente por su ID
         var entity = await _context.Customers.FirstOrDefaultAsync(x => x.Id == updateCustomerDTO.Id);
 
@@ -144,7 +138,7 @@ public class CustomerRepository : ICustomerRepository
         entity.Email = updateCustomerDTO.Email;  // FirstName, si no, puedes actualizar otras propiedades
         entity.Phone = updateCustomerDTO.Phone;
         entity.BirthDate = updateCustomerDTO.BirthDate;  // FirstName, si no, puedes actualizar otras propiedades
-        
+
 
         // Guardar los cambios en la base de datos
         await _context.SaveChangesAsync();
@@ -154,6 +148,12 @@ public class CustomerRepository : ICustomerRepository
     }
 
     public Task<List<CustomerDTO>> List(PaginationRequest request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<DetailedAccountDTO> GetAll(int id)
+
     {
         throw new NotImplementedException();
     }
