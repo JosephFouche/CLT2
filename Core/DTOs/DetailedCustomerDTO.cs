@@ -13,6 +13,6 @@ namespace Core.DTOs
         public decimal Balance { get; set; }
         public string OpeningDate { get; set; } = string.Empty;
         
-        //public CustomerDTO Customer { get; set; } = null!;
+        public CustomerDTO Customer { get; set; } = null!;
     }
 }

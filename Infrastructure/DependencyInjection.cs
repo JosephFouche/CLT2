@@ -1,5 +1,6 @@
 ﻿using Core.DTOs;
 using Core.Interfaces.Repositories;
+using Core.Interfaces.Services;
 using FluentValidation;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
@@ -23,6 +24,9 @@ public static class DependencyInjection
 
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ICardRepository, CardRepository>();
+        services.AddScoped<IChargeRepository, ChargeRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         return services;
     }
@@ -32,6 +36,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddRepositories();
+        services.AddServices();
         services.AddDatabase(configuration);
         services.AddMapping();
 
@@ -61,6 +66,12 @@ public static class DependencyInjection
     {
         services.AddScoped<IValidator<CreateCustomerDTO>, CreateCustomerDTOValidator>();
         services.AddScoped<IValidator<UpdateCustomerDTO>, UpdateCustomerDTOValidator>();
+
+        return services;
+    }
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<ICardService, CardService>();
 
         return services;
     }

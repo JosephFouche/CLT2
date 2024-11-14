@@ -144,7 +144,7 @@ public class CustomerRepository : ICustomerRepository
         await _context.SaveChangesAsync();
 
         // Retornar la lista actualizada de clientes
-        return AddTo(entity);  // método List() para obtener la lista actualizada de clientes como CustomerDTO
+        return entity.Adapt<CustomerDTO>();  // método List() para obtener la lista actualizada de clientes como CustomerDTO
     }
 
     public Task<List<CustomerDTO>> List(PaginationRequest request, CancellationToken cancellationToken)

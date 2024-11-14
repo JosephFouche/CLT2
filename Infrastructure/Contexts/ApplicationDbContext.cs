@@ -8,6 +8,12 @@ public partial class ApplicationDbContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Account> Accounts { get; set; }//DBSet para entidad tabla
+    //se crea tabla tarjeta de credito
+    public DbSet<Card> Cards { get; set; }//tarjeta de credito
+    //hacer tabla cargar
+    //payments
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Charge> Charges { get; set; }
     public ApplicationDbContext()
     {
     }

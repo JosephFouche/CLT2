@@ -21,7 +21,7 @@ namespace WebApi.Controllers
 
         // GET: api/Account/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAccount([FromRoute]int id)
+        public async Task<IActionResult> GetAll([FromRoute]int id)
         {
             // Llamar al método del repositorio para obtener la cuenta detallada
             var account = await _accountRepository.GetAll(id);
