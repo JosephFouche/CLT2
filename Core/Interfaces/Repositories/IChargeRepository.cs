@@ -18,7 +18,7 @@ namespace Core.Interfaces.Repositories
         Task<ResponseChargeDTO> AddAsync(int CardId, AddChargeDTO addChargeDTO);
         Task<AddChargeDTO> CreateCharge(CreateChargeRequest request);
 
-        Task<bool> VerifyChargeAmount(int cardId, decimal amount);
+         Task <bool> VerifyChargeAmount(int cardId, int amount);
 
     }
 }

@@ -14,7 +14,9 @@ namespace Core.DTOs
 
         public string Description { get; set; } = string.Empty;
         public DateTime Date { get; set; }
-        public decimal Balance { get; set; }
+        public int AvailableCredit { get; set; }
+        //agregado
+       // public decimal Balance { get; set; }
 
     }
 }

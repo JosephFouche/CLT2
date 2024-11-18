@@ -75,7 +75,7 @@ namespace Infrastructure.Repositories
 
             var card = await _context.Cards.FindAsync(request.CardId);
             //corregir
-          
+
             var chartoCreate = request.Adapt<Charge>();
             // Disminuir el límite disponible
             //card.CreditLimit += request.Amount;
@@ -86,24 +86,29 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return chargeToCreate.Adapt<AddChargeDTO>();
+
         }
 
-        public async Task<bool> VerifyChargeAmount(int cardId, int amount)
-        {
-            var card = await _context.Cards.FindAsync(cardId);
-
-            if (card is null)
-                throw new Exception("No se encontro la tarjeta con el id provisto");
-
-            return card.AvailableLimit  >= amount;
-        }
-
-        public Task<bool> VerifyChargeAmount(int cardId, decimal amount)
+        public Task<bool> VerifyChargeAmount(int cardId, int amount)
         {
             throw new NotImplementedException();
         }
     }
-}
+
+        //public async Task<bool> VerifyChargeAmount(int cardId, int amount)
+        //{
+        //    var card = await _context.Cards.FindAsync(cardId);
+
+        //    if (card is null)
+        //        throw new Exception("No se encontro la tarjeta con el id provisto");
+
+        //    return card.AvailableLimit  >= amount;
+        //
+        
+
+       
+    }
+
 
 
 

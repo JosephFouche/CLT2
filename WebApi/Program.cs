@@ -23,8 +23,8 @@ builder.Services.AddSwaggerGen();
 // Registra el repositorio IAccountRepository para que se pueda inyectar en los controladores
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddInfrastructure(builder.Configuration);
-//builder.Services.AddRepositories();
-//builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddRepositories();
+builder.Services.AddDatabase(builder.Configuration);
 
 var app = builder.Build();
 

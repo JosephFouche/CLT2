@@ -1,9 +1,11 @@
-﻿using Core.DTOs;
+﻿using Core;
+using Core.DTOs;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using FluentValidation;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<ICardRepository, CardRepository>();
         services.AddScoped<IChargeRepository, ChargeRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<IEntityRepository, EntityRepository>();
 
         return services;
     }
@@ -72,6 +75,7 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<ICardService, CardService>();
+        services.AddScoped<IEntityService, EntityService>();
 
         return services;
     }

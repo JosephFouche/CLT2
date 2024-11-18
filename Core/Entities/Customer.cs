@@ -8,9 +8,11 @@ public class Customer
 
     public string? Email { get; set; }
     public string? Phone { get; set; }
-    public DateTime? BirthDate {  get; set; }
+    public DateTime? BirthDate { get; set; }
 
     public List<Account> Accounts { get; set; } = [];
-    public List<Card> Cards { get; set; }= [];
+    public List<Card> Cards { get; set; } = [];
+    //public List<Product>Products { get; set; } = [];
+    public List<Entidad> Entities { get; set; } = [];
     
 }

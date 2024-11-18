@@ -12,5 +12,6 @@ namespace Core.Interfaces.Services
     {
         Task<CreateNewCardDTO> Create(CreateCardRequest request);
         Task<AddChargeDTO> CreateCharge(CreateChargeRequest request);
+        //Task<bool> VerifyChargeAmount(int cardId, int amount);
     }
 }

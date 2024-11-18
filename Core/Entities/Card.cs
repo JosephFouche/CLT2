@@ -21,7 +21,7 @@ namespace Core.Entities
         public int CreditLimit { get; set; }
         public int AvailableLimit { get; set; }
         public decimal InterestRate { get; set; }
-
+       // public decimal Balance { get; set; }
 
 
         //relations 

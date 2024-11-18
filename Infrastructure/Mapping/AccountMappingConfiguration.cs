@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Mapping
+namespace Infrastructure.Mapping//detalles
 {
     public class AccountMappingConfiguration : IRegister
     {

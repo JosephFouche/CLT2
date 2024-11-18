@@ -83,7 +83,7 @@ namespace Infrastructure.Repositories
 
             }
 
-            //return Entity.Adapt<GetCardDTO>();
+            //return Account.Adapt<GetCardDTO>();
             var datos = new GetCardDTO
             {
 
@@ -195,7 +195,7 @@ namespace Infrastructure.Repositories
             if (card is null)
                 throw new Exception("No se encontro la tarjeta con el id provisto");
 
-            return card.AvailableLimit >= amount;
+            return card.CreditLimit - card.AvailableLimit >= amount;
         }
 
         public async  Task <CreateNewCardDTO> Create(CreateCardRequest request)
@@ -224,7 +224,7 @@ namespace Infrastructure.Repositories
 
             //// Agregar la tarjeta a la base de datos
             //_context.Cards.Add(cardToCreate);
-            //await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();jhjvjhv
 
             // Adaptar la tarjeta creada a un CreateNewCardDTO y devolverlo
             return cardToCreate.Adapt<CreateNewCardDTO>();
@@ -235,7 +235,8 @@ namespace Infrastructure.Repositories
             var chargeToCreate = request.Adapt<Charge>();
 
             var card = await _context.Cards.FindAsync(request.CardId);
-            card.AvailableLimit -= request.Amount;
+            chargeToCreate.AvailableLimit = card!.AvailableLimit - request.Amount;
+            card!.AvailableLimit -= request.Amount;   
 
             _context.Charges.Add(chargeToCreate);
 
@@ -243,5 +244,6 @@ namespace Infrastructure.Repositories
 
             return chargeToCreate.Adapt<AddChargeDTO>();
         }
+       
     }
 }

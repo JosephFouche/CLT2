@@ -25,10 +25,11 @@ namespace Infrastructure.Configurations
             entity
                 .Property(x => x.OpeningDate)
                 .IsRequired();
+            
             entity
                 .HasOne(x => x.Customer)
-                .WithMany(x =>x.Accounts)
-                .HasForeignKey(x=>x.CustomerId);
+                .WithMany(x => x.Accounts)
+                .HasForeignKey(x => x.CustomerId);
         }
     }
 }

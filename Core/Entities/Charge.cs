@@ -14,6 +14,11 @@ namespace Core.Entities
         public string Description { get; set; } = string.Empty;
         public DateTime Date {  get; set; }
         public Card Cards { get; set; } = null!;
+        public int AvailableLimit { get; set; }
+        public int Balance { get; set; }
+
+
+        
 
     }
     }

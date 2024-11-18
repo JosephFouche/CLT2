@@ -14,6 +14,11 @@ public partial class ApplicationDbContext : DbContext
     //payments
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Charge> Charges { get; set; }
+
+    //Entidad
+    public DbSet<Entidad> Entities { get; set; }
+    public DbSet<Product> Products { get; set; }
+
     public ApplicationDbContext()
     {
     }

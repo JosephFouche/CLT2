@@ -27,6 +27,10 @@ namespace Infrastructure.Configurations
                 .Property(x => x.Date)
                 .IsRequired();
 
+            entity
+               .Property(x => x.AvailableLimit)
+               .IsRequired();
+
             // Relación con Card
             entity
                 .HasOne(x => x.Cards)  // Relación con la sentidad Card

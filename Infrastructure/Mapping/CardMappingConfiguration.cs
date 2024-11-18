@@ -33,12 +33,14 @@ namespace Infrastructure.Mapping
                 .Map(dest => dest.Amount, src => src.Amount)
                 .Map(dest => dest.Description, src => src.Description)
             .Map(dest => dest.CardId, src => src.CardId);
-            
+
 
             config.NewConfig<Charge, AddChargeDTO>()
                 .Map(dest => dest.Amount, src => src.Amount)
                 .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.Date, src => src.Date.ToShortDateString());
+               // .Map(dest => dest.Balance, src => src.AvailableLimit - src.Amount);
+                
                 
         }
     }
